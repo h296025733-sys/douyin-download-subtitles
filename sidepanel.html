@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>抖音口播字幕</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header>
+    <div class="eyebrow">抖音 · 下载与字幕 <span>1.3.0</span></div>
+    <h1>口播字幕</h1>
+    <p id="video-title" class="video-title">打开抖音视频，即可提取口播。</p>
+  </header>
+  <section class="controls" aria-label="字幕控制">
+    <label class="auto-control">
+      <span><strong>自动提取</strong><small>切换视频后，自动读取现成字幕</small></span>
+      <input id="auto" type="checkbox" role="switch" aria-label="切换视频自动提取字幕">
+    </label>
+    <div class="run-actions">
+      <button id="generate" class="primary" disabled>读取当前视频字幕</button>
+      <button id="cancel" class="secondary" hidden>停止</button>
+    </div>
+    <button id="speech" class="secondary speech-fallback" hidden title="仅主动点击才读取音轨、下载约 90 MB 模型并在本机识别；文字与时间可能有误差">本机识别（较慢，可选）</button>
+    <div id="status" role="status" aria-live="polite">正在连接当前视频…</div>
+    <progress id="progress" max="100" hidden aria-label="字幕处理进度"></progress>
+  </section>
+  <section class="transcript" aria-label="字幕与时间戳">
+    <div class="transcript-heading">
+      <div><h2>字幕与时间戳</h2><span id="summary">尚未生成</span></div>
+      <button id="download" class="secondary" disabled title="保存含起止时间戳的 SRT 字幕文件">↓ 下载 SRT</button>
+    </div>
+    <div id="empty" class="empty"><span class="empty-symbol" aria-hidden="true">“</span><p>字幕与时间戳显示在这里</p><small>读取现成字幕，无需下载语音模型。</small></div>
+    <ol id="cues" aria-label="带时间戳的字幕"></ol>
+  </section>
+  <footer>手动和自动模式都只读取平台已有字幕，不自动运行模型。<br>只有点击“本机识别”才下载约 90 MB 模型；结果可能有误差。<br>自动提取在此面板打开期间运行。</footer>
+  <script src="core.js"></script>
+  <script src="subtitle-core.js"></script>
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

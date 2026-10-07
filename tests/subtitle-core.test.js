@@ -1,0 +1,20 @@
+"use strict";
+const assert = require("node:assert/strict");
+const sub = require("../subtitle-core.js");
+const capture = require("../capture-core.js");
+
+assert.equal(sub.timestamp(59.9996, true), "00:01:00,000");
+assert.equal(sub.timestamp(3661.025, true), "01:01:01,025");
+const cues = sub.parseSubtitleFile("WEBVTT\n\n00:00.100 --> 00:02.450 align:start\n<c>第一句</c>\n\n00:02.450 --> 00:05.000\n第二句 &amp; 时间戳\n");
+assert.deepEqual(cues, [{ start: 0.1, end: 2.45, text: "第一句" }, { start: 2.45, end: 5, text: "第二句 & 时间戳" }]);
+assert.equal(sub.toSrt(cues), "1\r\n00:00:00,100 --> 00:00:02,450\r\n第一句\r\n\r\n2\r\n00:00:02,450 --> 00:00:05,000\r\n第二句 & 时间戳\r\n");
+assert.deepEqual(sub.parseSubtitleFile(sub.toSrt(cues)), cues);
+assert.deepEqual(sub.parseSubtitleFile('{"utterances":[{"start_time":1200,"end_time":2700,"text":"口播"}]}'), [{ start: 1.2, end: 2.7, text: "口播" }]);
+assert.deepEqual(sub.normalizeSegments([{ start: null, end: 1, text: "invalid" }, { start: 1, end: null, text: "结尾" }], 3), [{ start: 1, end: 3, text: "结尾" }]);
+assert.equal(sub.trustedUrl("https://douyinvod.com.evil.example/a"), null);
+assert.equal(sub.trustedUrl("https://username:personf486d@example.com/a"), null);
+assert.deepEqual(sub.parseSubtitleFile("<html>没有字幕</html>"), []);
+const item = { aweme_id: "7674035171997330170", desc: "测试", video: { play_addr: { url_list: ["https://v3.douyinvod.com/test.mp4"] }, caption_infos: [{ url: "https://v3.douyinvod.com/test.json", lang: "zh" }] } };
+assert.equal(capture.extractPlayableItems(item)[0].subtitleTracks[0].language, "zh");
+assert.equal(capture.extractPlayableItems(item)[0].subtitleTracks[0].url, "https://v3.douyinvod.com/test.json");
+console.log("subtitle-core.test.js: passed (SRT round-trip, milliseconds, native JSON, track binding, URL validation)");
